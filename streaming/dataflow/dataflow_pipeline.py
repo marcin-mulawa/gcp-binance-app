@@ -99,18 +99,7 @@ def run(
             | "Parse JSON messages" >> beam.Map(parse_json_message)
             | "Fixed-size windows"
             >> beam.WindowInto(window.FixedWindows(window_interval_sec, 0))
-            | "Add URL keys" >> beam.WithKeys(lambda msg: msg["url"])
-            | "Group by URLs" >> beam.GroupByKey()
-            | "Get statistics"
-            >> beam.MapTuple(
-                lambda url, messages: {
-                    "url": url,
-                    "num_reviews": len(messages),
-                    "score": sum(msg["score"] for msg in messages) / len(messages),
-                    "first_date": min(msg["processing_time"] for msg in messages),
-                    "last_date": max(msg["processing_time"] for msg in messages),
-                }
-            )
+            
         )
 
         # Output the results into BigQuery table.
