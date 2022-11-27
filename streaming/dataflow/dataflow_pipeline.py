@@ -43,13 +43,13 @@ def parse_json_message(message: str) -> Dict[str, Any]:
     # get close time
     close_time = datetime.fromtimestamp(row["k"]["T"] / 1000)
     # get open price
-    open = Decimal(row["k"]["o"])
+    open_price = Decimal(row["k"]["o"])
     # get high price
-    high = Decimal(row["k"]["h"])
+    high_price = Decimal(row["k"]["h"])
     # get low price
-    low = Decimal(row["k"]["l"])
+    low_price = Decimal(row["k"]["l"])
     # get close price
-    close = Decimal(row["k"]["c"])
+    close_price = Decimal(row["k"]["c"])
     # get volume
     volume = Decimal(row["k"]["v"])
     # get number of trades
@@ -67,10 +67,10 @@ def parse_json_message(message: str) -> Dict[str, Any]:
         "interval": interval,
         "open_time": open_time,
         "close_time": close_time,
-        "open": open,
-        "high": high,
-        "low": low,
-        "close": close,
+        "open": open_price,
+        "high": high_price,
+        "low": low_price,
+        "close": close_price,
         "volume": volume,
         "number_of_trades": number_of_trades,
         "quote_asset_volume": quote_asset_volume,
