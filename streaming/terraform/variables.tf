@@ -33,8 +33,3 @@ variable "table_name" {
   type        = string
   default     = "binance_klines"
 }
-
-variable "table_schema" {
-  description = "The schema of the table"
-  default = file("schema.json")
-}
