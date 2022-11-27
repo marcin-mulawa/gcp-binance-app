@@ -1,7 +1,7 @@
 variable "project_id" {
-  description = "The project name"
+  description = "The project ID"
   type        = string
-  default     = "binance-app-gcp"
+  default     = "binance-app-gcp-369914"
 }
 
 variable "topic_name" {
