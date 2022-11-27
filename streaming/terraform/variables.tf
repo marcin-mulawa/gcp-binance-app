@@ -36,11 +36,11 @@ variable "table_name" {
 
 variable "table_schema" {
   description = "The schema of the table"
-  type = list(object({
-    name = string
-    type = string
-    mode = string
-  }))
+  # type = list(object({
+  #   name = string
+  #   type = string
+  #   mode = string
+  # }))
   default = [
     {
       name = "symbol"
