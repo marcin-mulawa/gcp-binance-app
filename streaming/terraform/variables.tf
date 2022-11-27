@@ -33,3 +33,15 @@ variable "table_name" {
   type        = string
   default     = "binance_klines"
 }
+
+variable "bucket_name" {
+  description = "The name of the bucket"
+  type        = string
+  default     = "binance-app-gcp-369914-bucket"
+}
+
+variable "bucket_location" {
+  description = "The location of the bucket"
+  type        = string
+  default     = "EU"
+}
