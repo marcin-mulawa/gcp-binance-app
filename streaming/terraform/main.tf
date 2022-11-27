@@ -24,6 +24,12 @@ resource "google_project_service" "bigquery" {
   service = "bigquery.googleapis.com"
 }
 
+#enable google cloud storage api
+resource "google_project_service" "storage" {
+  project = var.project_id
+  service = "storage.googleapis.com"
+}
+
 #create pubsub topic
 resource "google_pubsub_topic" "topic" {
   name = var.topic_name
@@ -50,5 +56,9 @@ resource "google_bigquery_table" "table" {
   schema     = file("schema.json")
 }
 
-
-
+#create google cloud storage bucket
+resource "google_storage_bucket" "bucket" {
+  name          = var.bucket_name
+  location      = var.bucket_location
+  force_destroy = true
+}
