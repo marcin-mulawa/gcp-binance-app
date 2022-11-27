@@ -19,9 +19,8 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import SetupOptions
 
 # from apache_beam.transforms.window import FixedWindows, TimestampedValue, SlidingWindows
-from apache_beam.io.gcp.internal.clients import bigquery_v2
-from apache_beam.io.gcp.internal.clients import bigquery_v2_messages
-from google.cloud import bigquery
+from apache_beam.io.gcp.internal.clients import bigquery
+from apache_beam.io.gcp.internal.clients import bigquery_messages
 
 PROJECT_ID = os.popen("gcloud config get-value project").read().strip()
 DATASET_ID = "binance"
@@ -91,20 +90,20 @@ class WriteToBigQuery(DoFn):
         self.table_name = table_name
         self.dataset_name = dataset_name
         self.project_name = project_name
-        self.table_spec = bigquery_v2_messages.TableReference(
+        self.table_spec = bigquery_messages.TableReference(
             projectId=self.project_name,
             datasetId=self.dataset_name,
             tableId=self.table_name,
         )
-        self.table = bigquery_v2_messages.Table(
+        self.table = bigquery_messages.Table(
             tableReference=self.table_spec, schema=self.schema
         )
-        self.create_disposition = bigquery_v2.enums.BigQueryDisposition.CREATE_IF_NEEDED
-        self.write_disposition = bigquery_v2.enums.BigQueryDisposition.WRITE_APPEND
+        self.create_disposition = bigquery.enums.BigQueryDisposition.CREATE_IF_NEEDED
+        self.write_disposition = bigquery.enums.BigQueryDisposition.WRITE_APPEND
         self.batch_size = 100
 
     def start_bundle(self):
-        self.client = bigquery_v2.BigqueryV2(
+        self.client = bigquery.BigqueryV2(
             url="https://www.googleapis.com/bigquery/v2/"
         )
         self.insert_all_data = []
@@ -118,9 +117,9 @@ class WriteToBigQuery(DoFn):
         self.flush()
 
     def flush(self):
-        insert_all_request = bigquery_v2_messages.BigqueryTabledataInsertAllRequest(
+        insert_all_request = bigquery_messages.BigqueryTabledataInsertAllRequest(
             rows=[
-                bigquery_v2_messages.TableDataInsertAllRequestRows(
+                bigquery_messages.TableDataInsertAllRequestRows(
                     insertId=str(random.randint(0, 1000000)), json=element
                 )
                 for element in self.insert_all_data
