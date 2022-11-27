@@ -26,6 +26,8 @@ from google.cloud import bigquery
 PROJECT_ID = os.popen("gcloud config get-value project").read().strip()
 DATASET_ID = "binance"
 TABLE_ID = "binance_klines"
+
+
 # process data from pubsub to bigquery
 class ProcessData(DoFn):
     def process(self, element, window=DoFn.WindowParam):
@@ -77,7 +79,7 @@ class ProcessData(DoFn):
             "quote_asset_volume": quote_asset_volume,
             "taker_buy_base_asset_volume": taker_buy_base_asset_volume,
             "taker_buy_quote_asset_volume": taker_buy_quote_asset_volume,
-            "ignore": ignore,
+            # "ignore": ignore,
             # "window_start": window_start,
             # "window_end": window_end,
         }
@@ -89,7 +91,6 @@ class WriteToBigQuery(DoFn):
         self.table_name = table_name
         self.dataset_name = dataset_name
         self.project_name = project_name
-        self.schema = create_bigquery_schema()
         self.table_spec = bigquery_v2_messages.TableReference(
             projectId=self.project_name,
             datasetId=self.dataset_name,
@@ -135,98 +136,6 @@ class WriteToBigQuery(DoFn):
         ).execute()
         self.insert_all_data = []
 
-
-# create bigquery schema
-def create_bigquery_schema():
-    # create schema
-    schema = bigquery_v2_messages.TableSchema()
-    # symbol
-    symbol = bigquery_v2_messages.TableFieldSchema()
-    symbol.name = "symbol"
-    symbol.type = "STRING"
-    symbol.mode = "NULLABLE"
-    # interval
-    interval = bigquery_v2_messages.TableFieldSchema()
-    interval.name = "interval"
-    interval.type = "STRING"
-    interval.mode = "NULLABLE"
-    # open_time
-    open_time = bigquery_v2_messages.TableFieldSchema()
-    open_time.name = "open_time"
-    open_time.type = "TIMESTAMP"
-    open_time.mode = "NULLABLE"
-    # close_time
-    close_time = bigquery_v2_messages.TableFieldSchema()
-    close_time.name = "close_time"
-    close_time.type = "TIMESTAMP"
-    close_time.mode = "NULLABLE"
-    # open_price
-    open_price = bigquery_v2_messages.TableFieldSchema()
-    open_price.name = "open_price"
-    open_price.type = "NUMERIC"
-    open_price.mode = "NULLABLE"
-    # high_price
-    high_price = bigquery_v2_messages.TableFieldSchema()
-    high_price.name = "high_price"
-    high_price.type = "NUMERIC"
-    high_price.mode = "NULLABLE"
-    # low_price
-    low_price = bigquery_v2_messages.TableFieldSchema()
-    low_price.name = "low_price"
-    low_price.type = "NUMERIC"
-    low_price.mode = "NULLABLE"
-    # close_price
-    close_price = bigquery_v2_messages.TableFieldSchema()
-    close_price.name = "close_price"
-    close_price.type = "NUMERIC"
-    close_price.mode = "NULLABLE"
-    # volume
-    volume = bigquery_v2_messages.TableFieldSchema()
-    volume.name = "volume"
-    volume.type = "NUMERIC"
-    volume.mode = "NULLABLE"
-    # number_of_trades
-    number_of_trades = bigquery_v2_messages.TableFieldSchema()
-    number_of_trades.name = "number_of_trades"
-    number_of_trades.type = "INTEGER"
-    number_of_trades.mode = "NULLABLE"
-    # quote_asset_volume
-    quote_asset_volume = bigquery_v2_messages.TableFieldSchema()
-    quote_asset_volume.name = "quote_asset_volume"
-    quote_asset_volume.type = "NUMERIC"
-    quote_asset_volume.mode = "NULLABLE"
-    # taker_buy_base_asset_volume
-    taker_buy_base_asset_volume = bigquery_v2_messages.TableFieldSchema()
-    taker_buy_base_asset_volume.name = "taker_buy_base_asset_volume"
-    taker_buy_base_asset_volume.type = "NUMERIC"
-    taker_buy_base_asset_volume.mode = "NULLABLE"
-    # taker_buy_quote_asset_volume
-    taker_buy_quote_asset_volume = bigquery_v2_messages.TableFieldSchema()
-    taker_buy_quote_asset_volume.name = "taker_buy_quote_asset_volume"
-    taker_buy_quote_asset_volume.type = "NUMERIC"
-    taker_buy_quote_asset_volume.mode = "NULLABLE"
-    # ignore
-    ignore = bigquery_v2_messages.TableFieldSchema()
-    ignore.name = "ignore"
-    ignore.type = "NUMERIC"
-    ignore.mode = "NULLABLE"
-
-    # add fields to schema
-    schema.fields.append(symbol)
-    schema.fields.append(interval)
-    schema.fields.append(open_time)
-    schema.fields.append(close_time)
-    schema.fields.append(open_price)
-    schema.fields.append(high_price)
-    schema.fields.append(low_price)
-    schema.fields.append(close_price)
-    schema.fields.append(volume)
-    schema.fields.append(number_of_trades)
-    schema.fields.append(quote_asset_volume)
-    schema.fields.append(taker_buy_base_asset_volume)
-    schema.fields.append(taker_buy_quote_asset_volume)
-    schema.fields.append(ignore)
-    return schema
 
 
 # run pipeline
