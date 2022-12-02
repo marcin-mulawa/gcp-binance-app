@@ -31,7 +31,7 @@ SCHEMA = ",".join(
 
 
 def parse_json_message(message: str) -> Dict[str, Any]:
-    """Parse the input json message and add 'score' & 'processing_time' keys."""
+    """Parse the input json message"""
     row = json.loads(message)
 
     # get symbol
